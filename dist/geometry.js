@@ -25,3 +25,13 @@ function sampleCurve(at,start,end,scale=10){
  return{segments,gaps,length:gaps?null:segments.reduce((sum,s)=>sum+dist(s.p,s.q),0)};
 }
 function curveDerivative(at,t){const h=1e-5*Math.max(1,Math.abs(t)),before=at(t-h),after=at(t+h);return after.map((v,i)=>(v-before[i])/(2*h))}
+
+function levelCurve(fn,min,max,level,resolution=60){
+ const lines=[],step=(max-min)/resolution;
+ const cross=(a,b)=>{let t=(level-a[2])/(b[2]-a[2]);return[a[0]+t*(b[0]-a[0]),a[1]+t*(b[1]-a[1]),level]};
+ for(let i=0;i<resolution;i++)for(let j=0;j<resolution;j++){
+  let x=min+i*step,y=min+j*step,p=[[x,y],[x+step,y],[x+step,y+step],[x,y+step]].map(([x,y])=>[x,y,fn(x,y)]);
+  for(const ids of [[0,1,2],[0,2,3]]){let triangle=ids.map(k=>p[k]);if(triangle.some(p=>!p.every(Number.isFinite)))continue;let hits=[];for(let k=0;k<3;k++){let a=triangle[k],b=triangle[(k+1)%3];if((a[2]<level)!==(b[2]<level)){let q=cross(a,b),residual=fn(q[0],q[1])-level;if(Number.isFinite(residual)&&Math.abs(residual)<=Math.max(Math.abs(a[2]-level),Math.abs(b[2]-level))*.6+1e-8)hits.push(q)}}if(hits.length===2&&Math.hypot(hits[0][0]-hits[1][0],hits[0][1]-hits[1][1])>1e-10)lines.push({p:hits[0],q:hits[1]})}
+ }
+ return lines;
+}

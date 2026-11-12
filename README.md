@@ -16,15 +16,15 @@ Expressions accept implicit multiplication and a supported subset of LaTeX, incl
 
 ## Calculus tools
 
-Explicit surfaces include approximate partial derivatives and tangent planes. Curves include tangent vectors, speed, and numerical arc length. Adaptive curve sampling leaves gaps around detected undefined values and large jumps.
+Explicit surfaces include approximate partial derivatives, tangent planes, and adjustable level curves. Objects can be named, recolored, and duplicated. Curves include tangent vectors, speed, and numerical arc length. Adaptive curve sampling leaves gaps around detected undefined values and large jumps.
 
 Use the animation parameter `a` in any expression. Camera controls include rotation, zoom, fit-to-scene, and XY/XZ/YZ views.
 
 ## Scene files
 
-Save scene downloads an `.abhilash` file containing equations, parameter ranges, inspection settings, and the camera view. Open scene accepts these files and legacy Orbit JSON scenes. The editor also accepts pasted scene-file text.
+Save scene downloads a `.json` file containing equations, parameter ranges, inspection settings, and the camera view. Open scene accepts JSON files and legacy `.abhilash` scenes. The editor also accepts pasted scene-file text.
 
-The format is UTF-8 text with an `ABHILASH 1` header followed by JSON. Files are validated before loading. Scene files contain data, not executable code.
+The format is versioned, UTF-8 JSON. Files are validated before loading. Scene files contain data, not executable code.
 
 ## Run locally
 
