@@ -2,7 +2,7 @@
 
 A browser-based graphing tool for multivariable calculus.
 
-[Open Orbit](https://orbit-graph-studio.pianoabhilash894720.chatgpt.site/)
+[Open Orbit](https://ebilesh.github.io/orbit/)
 
 ## Graph types
 
