@@ -44,9 +44,69 @@
 .axis-key span:nth-child(3) i { background: var(--plot-z) !important; }
 input::placeholder,textarea::placeholder { color: var(--secondary); opacity: 1; }
 @media(max-width:700px) {
-  .head-actions { flex-wrap: wrap; }
-  .head-actions .theme-control { flex: 0 0 100%; justify-content: flex-end; }
   .head-actions button,.file-button { min-height: 40px; }
   .theme-control select { min-height: 40px; }
 }
 @media(prefers-reduced-motion:reduce) { button,.file-button { transition:none; } }
+
+/* Keep the mobile toolbar compact and the editor aligned in normal flow. */
+header { display: grid; grid-template-columns: minmax(0,1fr) auto auto; }
+.head-actions { justify-content: flex-end; }
+.theme-control { grid-column: 3; grid-row: 1; }
+.head-actions { grid-column: 2; grid-row: 1; }
+.add-controls { display: grid; grid-template-columns: minmax(0,1fr) auto; align-items: end; gap: 8px; }
+.add-controls .type-label { padding-right: 0; min-width: 0; }
+.section:first-child .add { position: static; width: auto; min-width: 64px; min-height: 40px; margin: 0; }
+.add-controls select { min-height: 40px; }
+.touch-zoom { display: none; }
+.eq-head { margin-bottom: 6px; }
+.object-name { margin: 0 0 6px; padding: 6px 0; min-height: 32px; }
+.vector-entry { margin: 0 0 10px; }
+.math-preview { padding: 6px 8px 8px; min-height: 0; line-height: 1.35; }
+.math-preview math { font-size: 19px; }
+.parameter-bounds { row-gap: 12px; }
+@media(pointer:coarse) {
+  .desktop-zoom { display: none; }
+  .touch-zoom { display: inline; }
+  .object-name,.parameter-bounds input,.vector-entry input,.bounds input,
+  .paste-scene textarea { font-size: 16px; }
+  .eq-head select,.icon,.copy-object { min-height: 40px; }
+}
+@media(max-width:700px) {
+  header { grid-template-columns: minmax(0,1fr) auto; gap: 10px 12px; padding: 12px 16px; }
+  .brand>div { display: block; }
+  .brand h1 { line-height: 1; }
+  .brand small { margin-top: 4px; }
+  .theme-control { grid-column: 2; grid-row: 1; font-size: 0; }
+  .theme-control select { font-size: 13px; min-height: 40px; }
+  .head-actions { grid-column: 1 / -1; grid-row: 2; display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 4px; }
+  .head-actions button,.head-actions .file-button { font-size: 12px; padding: 8px 4px; white-space: nowrap; }
+  .toolbar { min-height: 56px; padding: 8px 16px; }
+  .tools button { min-height: 40px; padding: 7px 8px; }
+  .workspace { height: clamp(470px,65svh,540px); }
+  .section { padding: 18px 16px; }
+  .section-top { margin-bottom: 14px; }
+  .entry-help { margin: 10px 0; }
+  .math-pad { margin: 10px 0 6px; }
+  .math-pad button { min-height: 36px; }
+  .history-controls { margin: 0 0 4px; }
+  .equation { padding: 14px 0; }
+  .eq-head { gap: 6px; }
+  .eq-head select { font-size: 13px; padding: 6px 0; }
+  .object-color { width: 22px; }
+  .copy-object { padding: 4px; }
+  .eq-input { margin-top: 6px; padding: 10px; }
+  .math-preview math { font-size: 19px; }
+  .variable-hint { margin: 8px 0; }
+  .parameter-bounds { gap: 10px; }
+  .status { padding: 8px 16px; line-height: 1.5; }
+  .gallery { padding: 8px 16px; }
+  .stage-note { bottom: 14px; }
+}
+@media(max-width:360px) {
+  .tools button { padding-inline: 6px; font-size: 12px; }
+  .brand small { font-size: 12px; }
+}
+
+.brand small { letter-spacing: 0; }
+@media(pointer:coarse) { .type-label select,.eq-head select { font-size: 16px; } }

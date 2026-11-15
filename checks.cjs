@@ -2,3 +2,45 @@ const fs=require('fs'),vm=require('vm'),assert=require('assert');const noop=()=>
 
 
 listeners["orbit-theme-change"]();assert.equal(paintedBackground,"#212529");themeColors["--plot-bg"]="#f8f9fa";listeners["orbit-theme-change"]();assert.equal(paintedBackground,"#f8f9fa");console.log("Canvas redraw follows dark and light theme tokens");
+
+// Exercise the real canvas handlers, including switching between drag and pinch.
+vm.runInContext('W=0;zoom=1;yaw=0;pitch=0',sandbox);
+const plot=cache['#plot'];
+const pointer=(pointerId,clientX,clientY,extra={})=>({pointerId,clientX,clientY,pointerType:'touch',button:0,...extra});
+const camera=()=>vm.runInContext('({zoom,yaw,pitch,pointers:graphPointers.size})',sandbox);
+plot.onpointerdown(pointer(1,100,100));
+plot.onpointermove(pointer(1,110,105));
+assert(Math.abs(camera().yaw-.08)<1e-10);
+assert(Math.abs(camera().pitch-.04)<1e-10);
+plot.onpointerdown(pointer(2,210,105));
+plot.onpointermove(pointer(2,310,105));
+assert.equal(camera().zoom,2);
+assert(Math.abs(camera().yaw-.08)<1e-10,'pinch must not rotate the graph');
+plot.onpointermove(pointer(2,160,105));
+assert.equal(camera().zoom,.5);
+plot.onpointerup(pointer(2,160,105));
+plot.onpointermove(pointer(1,115,105));
+assert(Math.abs(camera().yaw-.12)<1e-10,'lifting a finger must not jump the camera');
+assert.equal(camera().zoom,.5);
+plot.onpointercancel(pointer(1,115,105));
+plot.onpointermove(pointer(1,200,200));
+assert(Math.abs(camera().yaw-.12)<1e-10);
+assert.equal(camera().pointers,0);
+plot.onpointerdown(pointer(3,0,0));
+plot.onpointerdown(pointer(4,0,0));
+plot.onpointermove(pointer(4,100,0));
+assert(Number.isFinite(camera().zoom),'coincident fingers must not divide by zero');
+plot.onpointermove(pointer(4,10000,0));assert.equal(camera().zoom,3);
+plot.onpointermove(pointer(4,.001,0));assert.equal(camera().zoom,.3);
+plot.onlostpointercapture(pointer(3,0,0));
+plot.onlostpointercapture(pointer(4,.001,0));
+plot.onpointerdown(pointer(5,0,0,{pointerType:'mouse',button:2}));
+assert.equal(camera().pointers,0,'right mouse button must not rotate');
+plot.onpointerdown(pointer(6,0,0,{pointerType:'mouse'}));
+plot.onpointermove(pointer(6,10,0,{pointerType:'mouse'}));
+plot.onpointerup(pointer(6,10,0,{pointerType:'mouse'}));
+assert(Math.abs(camera().yaw-.2)<1e-10,'mouse rotation still works');
+let wheelPrevented=false;
+plot.onwheel({deltaY:-100,preventDefault(){wheelPrevented=true}});
+assert(wheelPrevented);assert(camera().zoom>.3);
+console.log('Gesture checks passed: drag, pinch in/out, no rotation during pinch, finger lift, cancel, lost capture, coincident fingers, zoom limits, mouse and wheel');
